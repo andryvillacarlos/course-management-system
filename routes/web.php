@@ -28,7 +28,7 @@ Route::get('/about',fn()=>inertia('Landing/About'))
 
 Route::middleware(['auth','verified'])->group(function (){
   // Dashboard Route
-  Route::get('/dashboard',fn()=>inertia('Admin/Dashboard'))
+  Route::get('/dashboard',fn()=>inertia('Admin/User/UserManage'))
         ->name('admin.dashboard');
 });
 
