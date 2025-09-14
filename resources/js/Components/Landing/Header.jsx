@@ -6,10 +6,10 @@ export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
 
   const navLinks = [
-    { name: "Home", href: "/" },
-    { name: "Courses", href: "/courses" },
-    { name: "About", href: "/about" },
-    { name: "Contact", href: "/contact" },
+    { name: "Home", href: "landing.home" },
+    { name: "Courses", href: "landing.course" },
+    { name: "About", href: "landing.about" },
+    { name: "Contact", href: "landing.contact" },
   ];
 
   return (
@@ -25,7 +25,7 @@ export default function Header() {
           {navLinks.map((link) => (
             <Link
               key={link.name}
-              href={link.href}
+              href={route(link.href)}
               className="hover:text-indigo-600 transition-colors"
             >
               {link.name}
@@ -61,7 +61,7 @@ export default function Header() {
             {navLinks.map((link) => (
               <Link
                 key={link.name}
-                href={link.href}
+                href={route(link.href)}
                 className="block px-3 py-2 rounded hover:bg-gray-100 transition"
                 onClick={() => setIsOpen(false)}
               >
