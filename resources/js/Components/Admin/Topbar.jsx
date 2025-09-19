@@ -1,10 +1,11 @@
 import { useState, useEffect, useRef } from "react";
-import { Link } from "@inertiajs/react";
+import { Link, usePage } from "@inertiajs/react";
 import { ChevronDown, LogOut, Settings, User, Menu } from "lucide-react";
 
 export default function TopBar({ setMobileOpen }) {
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const {user} = usePage().props.auth;
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -44,7 +45,7 @@ export default function TopBar({ setMobileOpen }) {
               alt="Profile"
               className="w-9 h-9 rounded-full border-2 border-white shadow-sm"
             />
-            <span className="font-medium hidden md:block">Admin User</span>
+            <span className="font-medium hidden md:block">{user.name}</span>
             <ChevronDown size={18} className="hidden md:block" />
           </div>
 

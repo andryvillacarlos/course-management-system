@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "@inertiajs/react"; // <-- Link import
 import {
   Users,
   BookOpen,
@@ -16,7 +17,7 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function AdminSidebar({ mobileOpen, setMobileOpen }) {
-  const [activeDropdowns, setActiveDropdowns] = useState([]); // multiple dropdowns open
+  const [activeDropdowns, setActiveDropdowns] = useState([]);
 
   const toggleDropdown = (name) => {
     if (activeDropdowns.includes(name)) {
@@ -27,61 +28,80 @@ export default function AdminSidebar({ mobileOpen, setMobileOpen }) {
   };
 
   const menuItems = [
-    { name: "User Management", icon: Users },
+    { name: "User Management", icon: Users, href: "/dashboard" },
     {
       name: "Course Management",
       icon: BookOpen,
-      sub: ["Add Course", "Assign Teacher", "Curriculum Setup"],
+      sub: [
+        { name: "Add Course", href: "/admin/courses/add" },
+        { name: "Assign Teacher", href: "/admin/courses/assign-teacher" },
+        { name: "Curriculum Setup", href: "/admin/courses/curriculum" },
+      ],
     },
     {
       name: "Departments & Classes",
       icon: GraduationCap,
-      sub: ["Add Department", "Create Section", "Assign Students"],
+      sub: [
+        { name: "Add Department", href: "/admin/departments/add" },
+        { name: "Create Section", href: "/admin/sections/create" },
+        { name: "Assign Students", href: "/admin/sections/assign-students" },
+      ],
     },
-    { name: "Enrollment", icon: ClipboardList },
+    { name: "Enrollment", icon: ClipboardList, href: "/admin/enrollment" },
     {
       name: "Grades & Evaluation",
       icon: ClipboardList,
-      sub: ["View Grades", "Approve Grades", "Generate Transcript"],
+      sub: [
+        { name: "View Grades", href: "/admin/grades/view" },
+        { name: "Approve Grades", href: "/admin/grades/approve" },
+        { name: "Generate Transcript", href: "/admin/grades/transcript" },
+      ],
     },
     {
       name: "Reports & Analytics",
       icon: BarChart3,
-      sub: ["Student Reports", "Teacher Reports", "Attendance"],
+      sub: [
+        { name: "Student Reports", href: "/admin/reports/students" },
+        { name: "Teacher Reports", href: "/admin/reports/teachers" },
+        { name: "Attendance", href: "/admin/reports/attendance" },
+      ],
     },
-    { name: "Finance & Billing", icon: DollarSign },
-    { name: "System Settings", icon: Settings },
-    { name: "Notifications", icon: Bell },
-    { name: "Audit & Security", icon: Shield },
+    { name: "Finance & Billing", icon: DollarSign, href: "/admin/finance" },
+    { name: "System Settings", icon: Settings, href: "/admin/settings" },
+    { name: "Notifications", icon: Bell, href: "/admin/notifications" },
+    { name: "Audit & Security", icon: Shield, href: "/admin/audit" },
   ];
 
   const SidebarContent = () => (
     <div className="w-64 bg-gradient-to-b from-indigo-600 to-blue-500 text-white min-h-screen p-4 shadow-lg">
-      {/* Logo */}
       <h2 className="text-lg font-bold mb-8 text-center">Admin Panel</h2>
 
-      {/* Menu Items */}
       <ul className="space-y-3">
         {menuItems.map((item, index) => {
           const isOpen = activeDropdowns.includes(item.name);
           return (
             <li key={index}>
-              {/* Parent Item */}
-              <div
-                onClick={() => item.sub && toggleDropdown(item.name)}
-                className="flex items-center justify-between p-2 rounded-lg hover:bg-white hover:bg-opacity-20 cursor-pointer transition"
-              >
-                <div className="flex items-center space-x-3">
+              {item.sub ? (
+                <div
+                  onClick={() => toggleDropdown(item.name)}
+                  className="flex items-center justify-between p-2 rounded-lg hover:bg-white hover:bg-opacity-20 cursor-pointer transition"
+                >
+                  <div className="flex items-center space-x-3">
+                    <item.icon size={20} className="text-yellow-300" />
+                    <span className="text-sm font-medium">{item.name}</span>
+                  </div>
+                  {isOpen ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+                </div>
+              ) : (
+                <Link
+                  href={item.href}
+                  className="flex items-center p-2 rounded-lg hover:bg-white hover:bg-opacity-20 transition space-x-3"
+                >
                   <item.icon size={20} className="text-yellow-300" />
                   <span className="text-sm font-medium">{item.name}</span>
-                </div>
+                </Link>
+              )}
 
-                {item.sub && (
-                  isOpen ? <ChevronDown size={16} /> : <ChevronRight size={16} />
-                )}
-              </div>
-
-              {/* Submenu with animation */}
               <AnimatePresence>
                 {item.sub && isOpen && (
                   <motion.ul
@@ -91,11 +111,13 @@ export default function AdminSidebar({ mobileOpen, setMobileOpen }) {
                     className="ml-8 mt-2 space-y-2 text-sm text-gray-100"
                   >
                     {item.sub.map((subItem, subIndex) => (
-                      <li
-                        key={subIndex}
-                        className="p-2 rounded-md hover:bg-white hover:bg-opacity-10 cursor-pointer transition"
-                      >
-                        {subItem}
+                      <li key={subIndex}>
+                        <Link
+                          href={subItem.href}
+                          className="block p-2 rounded-md hover:bg-white hover:bg-opacity-10 transition"
+                        >
+                          {subItem.name}
+                        </Link>
                       </li>
                     ))}
                   </motion.ul>
@@ -110,23 +132,18 @@ export default function AdminSidebar({ mobileOpen, setMobileOpen }) {
 
   return (
     <>
-      {/* Desktop Sidebar */}
       <div className="hidden md:block">
         <SidebarContent />
       </div>
 
-      {/* Mobile Sidebar */}
       {mobileOpen && (
         <div className="fixed inset-0 z-50 flex">
-          {/* Overlay */}
           <div
             className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm"
             onClick={() => setMobileOpen(false)}
           ></div>
 
-          {/* Sidebar */}
           <div className="relative w-64 bg-gradient-to-b from-indigo-600 to-blue-500 text-white shadow-lg">
-            {/* Close Button */}
             <div className="flex justify-end p-4">
               <button onClick={() => setMobileOpen(false)}>
                 <X size={24} />

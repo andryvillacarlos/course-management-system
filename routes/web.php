@@ -3,7 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\TeacherController;
 
 // Root route 
 Route::get('/',fn()=>inertia('Landing/Welcome'));
@@ -27,9 +27,12 @@ Route::get('/about',fn()=>inertia('Landing/About'))
 // <---- Admin page route ---->
 
 Route::middleware(['auth','verified'])->group(function (){
-  // Dashboard Route
+  // User Management Dashboard
   Route::get('/dashboard',fn()=>inertia('Admin/User/UserManage'))
         ->name('admin.dashboard');
+  // Add Teacher Route
+  Route::get('/dashboard/add-teacher',[TeacherController::class,'index'])
+        ->name('teacher.add');     
 });
 
 // <---- End of admin page route ---->

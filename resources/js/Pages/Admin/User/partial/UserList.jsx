@@ -1,6 +1,5 @@
-// resources/js/Pages/Admin/UserListPage.jsx
 import React, { useState } from "react";
-import { Plus } from "lucide-react"; 
+import { Plus } from "lucide-react";
 import {
   Select,
   SelectTrigger,
@@ -8,9 +7,9 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import { Button } from "@/components/ui/button"; // adjust the path if needed
-
+import { Button } from "@/components/ui/button";
 import SearchBox from "@/Components/utils/search";
+import AddTeacher from "../AddTeacher";
 
 // Sample users data
 const usersData = [
@@ -23,9 +22,10 @@ const usersData = [
 
 export default function UserListPage() {
   const [search, setSearch] = useState("");
-  const [roleFilter, setRoleFilter] = useState("all"); // default to "all"
+  const [roleFilter, setRoleFilter] = useState("all");
+  const [isAddTeacherOpen, setIsAddTeacherOpen] = useState(false); // modal state
 
-  const filteredUsers = usersData.filter(user => {
+  const filteredUsers = usersData.filter((user) => {
     return (
       user.name.toLowerCase().includes(search.toLowerCase()) &&
       (roleFilter === "all" || user.role === roleFilter)
@@ -40,7 +40,7 @@ export default function UserListPage() {
 
         <div className="flex flex-col sm:flex-row sm:items-center sm:gap-2 w-full md:w-auto">
           {/* Search */}
-          <SearchBox/>
+          <SearchBox value={search} onChange={(e) => setSearch(e.target.value)} />
 
           {/* Role Filter */}
           <Select value={roleFilter} onValueChange={setRoleFilter}>
@@ -48,7 +48,7 @@ export default function UserListPage() {
               <SelectValue placeholder="Select Role" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Roles</SelectItem> {/* non-empty value */}
+              <SelectItem value="all">All Roles</SelectItem>
               <SelectItem value="Admin">Admin</SelectItem>
               <SelectItem value="Instructor">Instructor</SelectItem>
               <SelectItem value="Student">Student</SelectItem>
@@ -56,16 +56,15 @@ export default function UserListPage() {
           </Select>
 
           {/* Add Teacher Button */}
-         <Button
-            onClick={() => alert("Redirect to add teacher page")}
+          <Button
+            onClick={() => setIsAddTeacherOpen(true)}
             variant="blue"
             size="sm"
             className="flex items-center gap-2"
-            >
+          >
             <Plus size={16} />
             Add Teacher
-        </Button>
-
+          </Button>
         </div>
       </div>
 
@@ -82,13 +81,19 @@ export default function UserListPage() {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {filteredUsers.map(user => (
+            {filteredUsers.map((user) => (
               <tr key={user.id}>
                 <td className="px-6 py-4 whitespace-nowrap">{user.name}</td>
                 <td className="px-6 py-4 whitespace-nowrap">{user.email}</td>
                 <td className="px-6 py-4 whitespace-nowrap">{user.role}</td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${user.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                  <span
+                    className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                      user.status === "Active"
+                        ? "bg-green-100 text-green-800"
+                        : "bg-red-100 text-red-800"
+                    }`}
+                  >
                     {user.status}
                   </span>
                 </td>
@@ -99,12 +104,21 @@ export default function UserListPage() {
             ))}
             {filteredUsers.length === 0 && (
               <tr>
-                <td colSpan="5" className="px-6 py-4 text-center text-gray-400">No users found.</td>
+                <td colSpan="5" className="px-6 py-4 text-center text-gray-400">
+                  No users found.
+                </td>
               </tr>
             )}
           </tbody>
         </table>
       </div>
+
+      {/* Modal (Add Teacher Form) */}
+      {isAddTeacherOpen && <AddTeacher
+       isOpen={isAddTeacherOpen}
+       onClose={() => setIsAddTeacherOpen(false)}
+/>
+}
     </div>
   );
 }
