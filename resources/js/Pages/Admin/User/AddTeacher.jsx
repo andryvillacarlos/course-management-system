@@ -1,27 +1,30 @@
-import React, { useState } from "react";
+import React from "react";
 import Input from "@/Components/utils/Input";
 import { X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useForm } from "@inertiajs/react";
 
 const AddTeacher = ({ onClose, isOpen }) => {
-  const [formData, setFormData] = useState({
-    fullName: "",
+  const { data, setData, post, processing, errors, reset } = useForm({
+    name: "",
     email: "",
     password: "",
-    confirmPassword: "",
+    password_confirmation: "",
   });
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    setData(e.target.name, e.target.value);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Form submitted:", formData);
-    onClose();
+
+    post(route("teacher.store"), {
+      onSuccess: () => {
+        reset(); // clear form after success
+        onClose(); // close modal
+      },
+    });
   };
 
   return (
@@ -58,11 +61,12 @@ const AddTeacher = ({ onClose, isOpen }) => {
               <div className="relative">
                 <Input
                   type="text"
-                  name="fullName"
-                  value={formData.fullName}
+                  name="name"
+                  value={data.name}
                   onChange={handleChange}
-                  className="peer w-full px-3 pt-5 pb-2 border border-gray-300 rounded-lg 
-                             focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-transparent"
+                  className={`peer w-full px-3 pt-5 pb-2 border rounded-lg 
+                    focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-transparent 
+                    ${errors.name ? "border-red-500" : "border-gray-300"}`}
                   placeholder="Full Name"
                 />
                 <label className="absolute left-3 top-2 text-sm text-gray-500 transition-all 
@@ -71,6 +75,9 @@ const AddTeacher = ({ onClose, isOpen }) => {
                                  peer-focus:text-sm peer-focus:text-blue-600">
                   Full Name
                 </label>
+                {errors.name && (
+                  <p className="text-red-500 text-sm mt-1">{errors.name}</p>
+                )}
               </div>
 
               {/* Email */}
@@ -78,10 +85,11 @@ const AddTeacher = ({ onClose, isOpen }) => {
                 <Input
                   type="email"
                   name="email"
-                  value={formData.email}
+                  value={data.email}
                   onChange={handleChange}
-                  className="peer w-full px-3 pt-5 pb-2 border border-gray-300 rounded-lg 
-                             focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-transparent"
+                  className={`peer w-full px-3 pt-5 pb-2 border rounded-lg 
+                    focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-transparent 
+                    ${errors.email ? "border-red-500" : "border-gray-300"}`}
                   placeholder="Email Address"
                 />
                 <label className="absolute left-3 top-2 text-sm text-gray-500 transition-all 
@@ -90,6 +98,9 @@ const AddTeacher = ({ onClose, isOpen }) => {
                                  peer-focus:text-sm peer-focus:text-blue-600">
                   Email Address
                 </label>
+                {errors.email && (
+                  <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+                )}
               </div>
 
               {/* Password */}
@@ -97,10 +108,11 @@ const AddTeacher = ({ onClose, isOpen }) => {
                 <Input
                   type="password"
                   name="password"
-                  value={formData.password}
+                  value={data.password}
                   onChange={handleChange}
-                  className="peer w-full px-3 pt-5 pb-2 border border-gray-300 rounded-lg 
-                             focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-transparent"
+                  className={`peer w-full px-3 pt-5 pb-2 border rounded-lg 
+                    focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-transparent 
+                    ${errors.password ? "border-red-500" : "border-gray-300"}`}
                   placeholder="Password"
                 />
                 <label className="absolute left-3 top-2 text-sm text-gray-500 transition-all 
@@ -109,17 +121,21 @@ const AddTeacher = ({ onClose, isOpen }) => {
                                  peer-focus:text-sm peer-focus:text-blue-600">
                   Password
                 </label>
+                {errors.password && (
+                  <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+                )}
               </div>
 
               {/* Confirm Password */}
               <div className="relative">
                 <Input
                   type="password"
-                  name="confirmPassword"
-                  value={formData.confirmPassword}
+                  name="password_confirmation"
+                  value={data.password_confirmation}
                   onChange={handleChange}
-                  className="peer w-full px-3 pt-5 pb-2 border border-gray-300 rounded-lg 
-                             focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-transparent"
+                  className={`peer w-full px-3 pt-5 pb-2 border rounded-lg 
+                    focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-transparent 
+                    ${errors.password_confirmation ? "border-red-500" : "border-gray-300"}`}
                   placeholder="Confirm Password"
                 />
                 <label className="absolute left-3 top-2 text-sm text-gray-500 transition-all 
@@ -128,6 +144,11 @@ const AddTeacher = ({ onClose, isOpen }) => {
                                  peer-focus:text-sm peer-focus:text-blue-600">
                   Confirm Password
                 </label>
+                {errors.password_confirmation && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.password_confirmation}
+                  </p>
+                )}
               </div>
 
               {/* Submit Button */}
@@ -135,10 +156,11 @@ const AddTeacher = ({ onClose, isOpen }) => {
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
                 type="submit"
+                disabled={processing}
                 className="mt-4 w-full bg-blue-600 hover:bg-blue-700 text-white 
-                           py-3 px-4 rounded-lg font-semibold shadow-md transition"
+                           py-3 px-4 rounded-lg font-semibold shadow-md transition disabled:opacity-50"
               >
-                Submit
+                {processing ? "Submitting..." : "Submit"}
               </motion.button>
             </form>
           </motion.div>

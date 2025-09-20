@@ -31,8 +31,8 @@ Route::middleware(['auth','verified'])->group(function (){
   Route::get('/dashboard',fn()=>inertia('Admin/User/UserManage'))
         ->name('admin.dashboard');
   // Add Teacher Route
-  Route::get('/dashboard/add-teacher',[TeacherController::class,'index'])
-        ->name('teacher.add');     
+  Route::post('/dashboard/add-teacher',[TeacherController::class,'storeTeacher'])
+        ->name('teacher.store');     
 });
 
 // <---- End of admin page route ---->
