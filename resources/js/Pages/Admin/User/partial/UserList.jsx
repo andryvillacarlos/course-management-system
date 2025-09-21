@@ -11,25 +11,23 @@ import { Button } from "@/components/ui/button";
 import SearchBox from "@/Components/utils/search";
 import AddTeacher from "../AddTeacher";
 
-// Sample users data
-const usersData = [
-  { id: 1, name: "John Doe", email: "john@example.com", role: "Student", status: "Active" },
-  { id: 2, name: "Jane Smith", email: "jane@example.com", role: "Instructor", status: "Inactive" },
-  { id: 3, name: "Admin User", email: "admin@example.com", role: "Admin", status: "Active" },
-  { id: 4, name: "Alice Brown", email: "alice@example.com", role: "Student", status: "Active" },
-  { id: 5, name: "Bob Johnson", email: "bob@example.com", role: "Instructor", status: "Inactive" },
-];
-
-export default function UserListPage() {
+export default function UserListPage({ teacherList }) {
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState("all");
-  const [isAddTeacherOpen, setIsAddTeacherOpen] = useState(false); // modal state
+  const [isAddTeacherOpen, setIsAddTeacherOpen] = useState(false);
 
-  const filteredUsers = usersData.filter((user) => {
-    return (
-      user.name.toLowerCase().includes(search.toLowerCase()) &&
-      (roleFilter === "all" || user.role === roleFilter)
-    );
+  // Extract the data array from pagination
+  const users = teacherList?.data || [];
+
+  // Apply filtering
+  const filteredUsers = users.filter((user) => {
+    const matchSearch =
+      user.name.toLowerCase().includes(search.toLowerCase()) ||
+      user.email.toLowerCase().includes(search.toLowerCase());
+
+    const matchRole = roleFilter === "all" || user.role.toLowerCase() === roleFilter.toLowerCase();
+
+    return matchSearch && matchRole;
   });
 
   return (
@@ -49,9 +47,10 @@ export default function UserListPage() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Roles</SelectItem>
-              <SelectItem value="Admin">Admin</SelectItem>
-              <SelectItem value="Instructor">Instructor</SelectItem>
-              <SelectItem value="Student">Student</SelectItem>
+              <SelectItem value="admin">Admin</SelectItem>
+              <SelectItem value="instructor">Instructor</SelectItem>
+              <SelectItem value="student">Student</SelectItem>
+              <SelectItem value="teacher">Teacher</SelectItem>
             </SelectContent>
           </Select>
 
@@ -81,15 +80,15 @@ export default function UserListPage() {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {filteredUsers.map((user) => (
-              <tr key={user.id}>
+            {filteredUsers.map((user, index) => (
+              <tr key={index}>
                 <td className="px-6 py-4 whitespace-nowrap">{user.name}</td>
                 <td className="px-6 py-4 whitespace-nowrap">{user.email}</td>
                 <td className="px-6 py-4 whitespace-nowrap">{user.role}</td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <span
                     className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                      user.status === "Active"
+                      user.status === "active"
                         ? "bg-green-100 text-green-800"
                         : "bg-red-100 text-red-800"
                     }`}
@@ -114,11 +113,12 @@ export default function UserListPage() {
       </div>
 
       {/* Modal (Add Teacher Form) */}
-      {isAddTeacherOpen && <AddTeacher
-       isOpen={isAddTeacherOpen}
-       onClose={() => setIsAddTeacherOpen(false)}
-/>
-}
+      {isAddTeacherOpen && (
+        <AddTeacher
+          isOpen={isAddTeacherOpen}
+          onClose={() => setIsAddTeacherOpen(false)}
+        />
+      )}
     </div>
   );
 }

@@ -1,18 +1,15 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\UserManagement;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\TeacherStoreRequest;
 use App\Models\Teacher;
-use Illuminate\Http\Request;
 
 class TeacherController extends Controller
 {
-    
-
-    // Store
-
-    public function storeTeacher(TeacherStoreRequest $request,Teacher $teacher){
+   
+      public function storeTeacher(TeacherStoreRequest $request,Teacher $teacher){
          
          $validated = $request->validated();
          $isCreated = $teacher->create($validated);
@@ -22,5 +19,5 @@ class TeacherController extends Controller
          }
 
         return redirect()->back()->with('errors','Something went wrong');
-  }
+    }
 }

@@ -3,10 +3,14 @@ import React from 'react';
 import AdminLayout from '@/Layouts/AdminLayout';
 import Dashboard from './partial/Dashboard';
 import UserListPage from './partial/UserList';
+import { usePage } from '@inertiajs/react';
 
 
 
 export default function UserManage() {
+
+  const {teacherData} = usePage().props;
+  
   return (
     <AdminLayout>
       <div className="space-y-12">
@@ -17,7 +21,7 @@ export default function UserManage() {
 
         {/* Users List Section */}
         <section>
-          <UserListPage />
+          <UserListPage teacherList={teacherData}/>
         </section>
       </div>
     </AdminLayout>
