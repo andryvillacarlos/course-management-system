@@ -9,7 +9,7 @@ import { usePage } from '@inertiajs/react';
 
 export default function UserManage() {
 
-  const {teacherData} = usePage().props;
+  const {teacherData,filters} = usePage().props;
   
   return (
     <AdminLayout>
@@ -21,7 +21,7 @@ export default function UserManage() {
 
         {/* Users List Section */}
         <section>
-          <UserListPage teacherList={teacherData}/>
+          <UserListPage filters={filters} teacherList={teacherData}/>
         </section>
       </div>
     </AdminLayout>
