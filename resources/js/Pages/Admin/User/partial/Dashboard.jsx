@@ -15,11 +15,12 @@ import { User, Users, BookOpen } from 'lucide-react';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement);
 
-export default function Dashboard() {
+export default function Dashboard({totalUsers,statusCount,roleCount}) {
+  
   const stats = {
-    totalUsers: 150,
-    activeUsers: 120,
-    roles: { Admin: 3, Instructor: 10, Student: 137 },
+    totalUsers : totalUsers ?? 0,
+    activeUsers: statusCount?.active ?? 'NA',
+    roles: { Admin: roleCount?.admin ?? 0, Instructor:roleCount?.teacher ?? 0, Student: roleCount?.student ?? 0 },
     courses: { total: 20, active: 15 },
   };
 

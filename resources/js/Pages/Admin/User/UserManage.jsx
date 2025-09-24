@@ -9,14 +9,14 @@ import { usePage } from '@inertiajs/react';
 
 export default function UserManage() {
 
-  const {teacherData,filters} = usePage().props;
+  const {teacherData,filters,roleCount,statusCount,totalUsers} = usePage().props;
   
   return (
     <AdminLayout>
       <div className="space-y-12">
         {/* Dashboard Section */}
         <section>
-          <Dashboard />
+          <Dashboard roleCount={roleCount} totalUsers={totalUsers} statusCount={statusCount}/>
         </section>
 
         {/* Users List Section */}
